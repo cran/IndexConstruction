@@ -1,0 +1,17 @@
+## regular functions:
+
+export("IndexComp", "SwitchDates", "IndexUpdate", "RelativeWeights", "IndexMemberSelection", "IndexMembersUpdate", 
+"CRIX", "ECRIX", "EFCRIX", "LCRIX", "LECRIX", "LEFCRIX"
+)
+
+# imports:
+
+import(lubridate)
+import(xts)
+import(fGarch)
+import(KernSmooth)
+
+importFrom(stats, lm, var)
+importFrom(utils, tail)
+importFrom(RcppBDT, getNthDayOfWeek)
+importFrom(zoo, index, na.locf)

@@ -1,0 +1,24 @@
+bibentry(bibtype = "Article",
+         title = "CRIX an Index for cryptocurrencies",
+         author = c(person("Simon", "Trimborn"),
+                    person("Wolfgang Karl", "Haerdle")),
+         journal = "Journal of Empirical Finance",
+		year    = "2018",
+		volume  = "49",
+		pages   = "107 - 122",
+		issn    = "0927-5398",
+		doi     = "10.1016/j.jempfin.2018.08.004",
+		url     = "http://www.sciencedirect.com/science/article/pii/S0927539818300616",
+		header = "The R-package is based on this publication. Please reference to it, when using this software:"
+  )
+
+
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s", meta$Version)
+
+bibentry(bibtype = "Manual",
+         title = "Index construction for time series data",
+         author = c(person("Simon", "Trimborn")),
+         year = year,
+         note = note,
+		 header = "Building R-packages and therefore easing the access to research output for other researchers involves a lot of work. Please also reference to this version of the R-package when using it for your work:")

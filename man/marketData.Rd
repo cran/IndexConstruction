@@ -1,0 +1,17 @@
+\name{market}
+\docType{data}
+\alias{market}
+
+\title{Market capitalization data for Cryptocurrencies.
+}
+\description{
+The dataset contains market capitalization information for cryptocurrencies.
+}
+\usage{
+data(CryptoData)
+}
+\format{A dataset with a xts matrix. Load the R library xts for proper visualization of the dataset.
+}
+
+\source{The dataset was provided by CoinGecko. Up-to-date data are accessible via \url{https://www.coingecko.com/api}.}
+
