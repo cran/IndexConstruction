@@ -1,8 +1,13 @@
 ## regular functions:
 
-export("IndexComp", "SwitchDates", "IndexUpdate", "RelativeWeights", "IndexMemberSelection", "IndexMembersUpdate", 
-"CRIX", "ECRIX", "EFCRIX", "LCRIX", "LECRIX", "LEFCRIX"
+export("indexComp", "switchDates", "indexUpdate", "relativeWeights", "indexMemberSelection", "indexMembersUpdate"
 )
+
+exportClass("IndexConstruction")
+
+S3method(print, IndexConstruction)
+S3method(plot, IndexConstruction)
+S3method(weights, IndexConstruction)
 
 # imports:
 
@@ -11,7 +16,7 @@ import(xts)
 import(fGarch)
 import(KernSmooth)
 
-importFrom(stats, lm, var)
-importFrom(utils, tail)
+importFrom(stats, lm, var, weights)
+importFrom(utils, tail, menu)
 importFrom(RcppBDT, getNthDayOfWeek)
 importFrom(zoo, index, na.locf)

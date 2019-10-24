@@ -1,5 +1,5 @@
-IndexEval = function(plot.diff, index.numb, IC = "AIC", plot.diff.first) {
-    switch(IC, AIC = {
+IndexEval = function(plot.diff, index.numb, ic = "AIC", plot.diff.first) {
+    switch(ic, AIC = {
     logLik1        = c()
     bw = dpik(plot.diff.first, kernel = "epanech", gridsize = 3201L) 
     for (cv1 in 1:length(plot.diff)){

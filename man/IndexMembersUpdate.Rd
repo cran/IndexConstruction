@@ -1,13 +1,13 @@
-\name{IndexMembersUpdate}
-\alias{IndexMembersUpdate}
+\name{indexMembersUpdate}
+\alias{indexMembersUpdate}
 
 \title{Reevaluation of Index constituents weights
 }
 \description{
-\code{IndexMembersUpdate} derives the new weights for the coming period. The methodology is according to Trimborn and Haerdle (2018). The method derives the new weights over the data period provided. The data input defines the length of the period, hence it can be different from full month.
+\code{indexMembersUpdate} derives the new weights for the coming period. The methodology is according to Trimborn and Haerdle (2018). The method derives the new weights over the data period provided. The data input defines the length of the period, hence it can be different from full month. This function is meant for continuous updating and display of an index on a website. For the derivation of an index for analysis purposes, please refer to the function \code{"indexComp"}.
 }
 \usage{
-IndexMembersUpdate(market, price, vol, weighting, index.const, last.value)
+indexMembersUpdate(market, price, vol, weighting, index.const, last.value)
 }
 \arguments{
 \item{market}{
@@ -22,13 +22,13 @@ An xts object with the trading volume (liquidity) data. The default is \code{NUL
   \item{weighting}{
 The weighting scheme to be applied. \code{"market"} refers to weighting by market capitalization, \code{"volume"} refers to weighting by trading volume.
 }
-  \item{index.const}{Number of Index constituents. The number can be derived from \code{IndexComp}, \code{IndexMemberSelection} or be chosen by alternative means.}
+  \item{index.const}{Number of Index constituents. The number can be derived from \code{indexComp}, \code{indexMemberSelection} or be chosen by alternative means.}
   \item{last.value}{
 The last index value before rederivation.
 }
 }
 \details{
-\code{IndexMembersUpdate} derives the new weights for the coming period. The methodology is according to Trimborn and Haerdle (2018). The method derives the new weights over the data period provided. The data input defines the length of the period, hence it can be different from full month. For more details, please see the methodology section of the paper Trimborn and Haerdle (2018).
+\code{indexMembersUpdate} derives the new weights for the coming period. The methodology is according to Trimborn and Haerdle (2018). The method derives the new weights over the data period provided. The data input defines the length of the period, hence it can be different from full month. For more details, please see the methodology section of the paper Trimborn and Haerdle (2018).
 }
 \value{
 A list, entry 1 is the ordered names of index members, entry 2 the respective consideration of the index constituents, entry 3 the weights of the index members which gives multiplied with entry 2 the actual weight and entry 4 the new divisor of the index.
@@ -42,7 +42,7 @@ data(CryptoData)
 price = price["2017-01-01::2017-01-31"]
 market = market["2017-01-01::2017-01-31"]
 vol = vol["2017-01-01::2017-01-31"]
-IndexMembersUpdate(market = market, price = price, vol = vol, 
+indexMembersUpdate(market = market, price = price, vol = vol, 
 weighting = "market", index.const = 5, last.value = 1000)
 
 }

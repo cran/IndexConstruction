@@ -7,6 +7,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
     order_market_list = list()
     weight_list       = list()
     weight_list2       = list()
+    weight_list3       = list()
     divisor_list      = list()
     
     if (per == 1){
@@ -173,6 +174,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
         
         weight_list[[i]] = (index_weights * as.vector(index_old_amount))
         weight_list2[[i]] = t(t(index_period_time1[, index_members_t[[i]]]) * (index_weights * as.vector(index_old_amount)))
+        weight_list3[[i]] = weight_list2[[i]][1,] / sum(weight_list2[[i]][1,])
         divisor_list[[i]] = divisor
         
         if (break_loop == T){
@@ -187,7 +189,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
         plot_index = c(plot_index, index[[i]])
     }
     
-    list(plot_index, order_market_list, index_weights, weight_list, weight_list2, divisor_list)
+    list(plot_index, order_market_list, index_weights, weight_list, weight_list2, divisor_list,weight_list3)
 }
 
 # end function

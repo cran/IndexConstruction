@@ -1,4 +1,4 @@
-IndexMembersUpdate = function(market, price, vol, weighting, index.const, last.value){
+indexMembersUpdate = function(market, price, vol, weighting, index.const, last.value){
   
   if (class(price)[1] != "xts" | class(market)[1] != "xts") {
     stop("The data for 'price' and 'market' have to be in the format 'xts'. Please check the R library 'xts' to convert the data.")

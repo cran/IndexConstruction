@@ -1,23 +1,23 @@
-\name{IndexUpdate}
-\alias{IndexUpdate}
+\name{indexUpdate}
+\alias{indexUpdate}
 
 \title{Updating an existing index with new index values
 }
 \description{
-\code{IndexUpdate} derives the next values of an Index from the given price, weights and its divisor.
+\code{indexUpdate} derives the next values of an Index from the given price, weights and its divisor. This function is meant for continuous updating and display of an index on a website. For the derivation of an index for analysis purposes, please refer to the function \code{"indexComp"}.
 }
 \usage{
-IndexUpdate(price, index.weights, divisor)
+indexUpdate(price, index.weights, divisor)
 }
 \arguments{
  \item{price}{
 An xts object with the price data. An entry is always required.
 }
   \item{index.weights}{
-A vector with the absolute weights expressed as number of shares of each asset. The weights are provided by \code{IndexComp}. They can be also easily derived from the market capitalization by dividing with the respective price.
+A vector with the absolute weights expressed as number of shares of each asset. The weights are provided by \code{indexComp}. They can be also easily derived from the market capitalization by dividing with the respective price.
 }
   \item{divisor}{
-The divisor required for the index derivation. The divisor is provided by \code{IndexComp}. For details on its derivation, see Trimborn and H{\"a}rdle (2018).
+The divisor required for the index derivation. The divisor is provided by \code{indexComp}. For details on its derivation, see Trimborn and Haerdle (2018).
 }
 }
 \details{
@@ -36,5 +36,5 @@ const.names = c("btc", "eth", "xrp", "ltc", "xmr")
 index.weights = c(16136712, 88440036, 36856524148, 49589181, 13859864)
 divisor = 17185084
 
-IndexUpdate(price["2017-02-01", const.names], index.weights = index.weights, divisor = divisor)
+indexUpdate(price["2017-02-01", const.names], index.weights = index.weights, divisor = divisor)
 }

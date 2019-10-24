@@ -1,20 +1,20 @@
-\name{RelativeWeights}
-\alias{RelativeWeights}
+\name{relativeWeights}
+\alias{relativeWeights}
 
 \title{Retrieving the relative weights of the assets in the index
 }
 \description{
-\code{RelativeWeights} retrieves the relative weights of the assets in the index from the absolute weights expressed in shares of the assets. The latter is a direct output of \code{IndexComp}.
+\code{relativeWeights} retrieves the relative weights of the assets in the index from the absolute weights expressed in shares of the assets. The latter is a direct output of \code{indexComp}.
 }
 \usage{
-RelativeWeights(price, index.weights)
+relativeWeights(price, index.weights)
 }
 \arguments{
  \item{price}{
 An xts object with the price data. An entry is always required.
 }
   \item{index.weights}{
-A vector with the absolute weights expressed as number of shares of each asset. The weights are provided by \code{IndexComp}. They can be also easily derived from the market capitalization by dividing with the respective price.
+A vector with the absolute weights expressed as number of shares of each asset. The weights are provided by \code{indexComp}. They can be also easily derived from the market capitalization by dividing with the respective price.
 }
 }
 \value{
@@ -29,5 +29,5 @@ data(CryptoData)
 const.names = c("btc", "eth", "xrp", "ltc", "xmr")
 index.weights = c(16136712, 88440036, 36856524148, 49589181, 13859864)
 
-RelativeWeights(price = price["2017-02-01", const.names], index.weights = index.weights)
+relativeWeights(price = price["2017-02-01", const.names], index.weights = index.weights)
 }

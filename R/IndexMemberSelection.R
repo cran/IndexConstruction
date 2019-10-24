@@ -1,5 +1,5 @@
-IndexMemberSelection = function(market, price, vol, weighting = "market", weighting.all = "market", IC = "AIC", 
-                                EvalSeq = c("Sequential", "AllTogether"), optimum = c("local", "global"), start.const = 1, steps = 1, 
+indexMemberSelection = function(market, price, vol, weighting = "market", weighting.all = "market", ic = "AIC", 
+                                eval.seq = c("sequential", "all.together"), optimum = c("local", "global"), start.const = 1, steps = 1, 
                                 fixed.value = NULL, derivation.period = 1, derivation.period.ic = 3, base.value = 1000, 
                                 days.line) {
   
@@ -12,14 +12,14 @@ IndexMemberSelection = function(market, price, vol, weighting = "market", weight
   if ((weighting != "market" & weighting != "volume") | (weighting.all != "market" & weighting.all != "volume")) {
     stop("The weighting scheme has to be either 'market' or 'volume'. Please chose either of the two options.")
   }
-  if ((EvalSeq != "Sequential" & EvalSeq != "AllTogether")) {
-    stop("The evaluation scheme 'EvalSeq' has to be either 'Sequential' or 'AllTogether'. Please chose either of the two options.")
+  if ((eval.seq != "sequential" & eval.seq != "all.together")) {
+    stop("The evaluation scheme 'eval.seq' has to be either 'sequential' or 'all.together'. Please chose either of the two options.")
   }
   if ((optimum != "local" & optimum != "global")) {
     stop("The optimal point 'optimum' has to be either 'local' or 'global'. Please chose either of the two options.")
   }
-  if ((IC != "AIC" & IC != "GCV" & IC != "GFCV" & IC != "SH" & IC != "Cp" & IC != "FPE")) {
-    stop("The Information Criterion 'IC' has to be either 'AIC', 'GCV', 'GFCV', 'SH', 'Cp' or 'FPE'. Please chose either of the options.")
+  if ((ic != "AIC" & ic != "GCV" & ic != "GFCV" & ic != "SH" & ic != "Cp" & ic != "FPE")) {
+    stop("The Information Criterion 'ic' has to be either 'AIC', 'GCV', 'GFCV', 'SH', 'Cp' or 'FPE'. Please chose either of the options.")
   }
   if ((weighting == "volume" | weighting.all == "volume") & is.null(vol)) {
     stop("When weighting by trading volume is chosen, a data entry for volume is required.")
@@ -49,7 +49,7 @@ IndexMemberSelection = function(market, price, vol, weighting = "market", weight
                                      crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
   max_coin_numb[1] = max(sapply(index_t_v_all[[2]], length))
   
-  if (EvalSeq == "AllTogether") {
+  if (eval.seq == "all.together") {
     index_t_v_numb = index.comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[1], base.value = base.value,
                                 index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines, 
                                 begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = 1, numb.aic = 1,
@@ -58,7 +58,7 @@ IndexMemberSelection = function(market, price, vol, weighting = "market", weight
   
   ### indices with different numbers of constituents
   for (per1 in 1:(length(index_comp_numb)-1)){
-    if (EvalSeq == "Sequential") {
+    if (eval.seq == "sequential") {
       index_t_v_numb = index.comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[per1], base.value = base.value,
                                   index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines,
                                   begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = 1, numb.aic = 1,
@@ -71,17 +71,17 @@ IndexMemberSelection = function(market, price, vol, weighting = "market", weight
     for (l in 1:length(index_t_v_numb[[2]])) {
       if (l == 1) {
         for (k in 1:length(index_t_v_numb[[2]])) {
-          if (EvalSeq == "Sequential") {
+          if (eval.seq == "sequential") {
             p[k] = length(which(!is.na(index_t_v_numb[[2]][[k]][(index_comp_numb[per1] + 1):index_comp_numb[per1 + 1]]) == TRUE))
-          } else if (EvalSeq == "AllTogether") {
+          } else if (eval.seq == "all.together") {
             p[k] = length(which(!is.na(index_t_v_numb[[2]][[k]][(index_comp_numb[1] + 1):index_comp_numb[per1 + 1]]) == TRUE))
           }
         }
       }
-      if (EvalSeq == "AllTogether" && any(p != per1*steps)) {break}
-      if (EvalSeq == "Sequential") {
+      if (eval.seq == "all.together" && any(p != per1*steps)) {break}
+      if (eval.seq == "sequential") {
         a = price[paste(current_lines[l+1]-1, "::", current_lines[l+2] - 1, sep = ""), index_t_v_numb[[2]][[l]][(index_comp_numb[per1] + 1):index_comp_numb[per1 + 1]]]
-      } else if (EvalSeq == "AllTogether") {
+      } else if (eval.seq == "all.together") {
         a = price[paste(current_lines[l+1]-1, "::", current_lines[l+2] - 1, sep = ""), index_t_v_numb[[2]][[l]][(index_comp_numb[1] + 1):index_comp_numb[per1 + 1]]]
       }
       
@@ -99,7 +99,7 @@ IndexMemberSelection = function(market, price, vol, weighting = "market", weight
       colnames(b) = 1:dim(b)[[2]]
       d = rbind(d,b[-1,])
     }
-    if (EvalSeq == "AllTogether" && any(p != per1*steps)) {break}
+    if (eval.seq == "all.together" && any(p != per1*steps)) {break}
     if (per1 == 1) {
       plot_diff_first = diff(log(c(base.value, index_t_v_all[[1]]))) - diff(log(c(base.value, index_t_v_numb[[1]])))
     }
@@ -108,14 +108,14 @@ IndexMemberSelection = function(market, price, vol, weighting = "market", weight
     erg = lm(plot_diff ~ data_x - 1)
     
     ### evaluation of current index with an IC method
-    aic_compare[1, per1] = IndexEval(plot.diff = erg$residuals, index.numb = length(erg$coefficients), IC = IC, plot.diff.first = plot_diff_first)
-    aic_matrix[1, per1] = IndexEval(plot.diff = plot_diff, index.numb = 0, IC = IC, plot.diff.first = plot_diff_first)
+    aic_compare[1, per1] = IndexEval(plot.diff = erg$residuals, index.numb = length(erg$coefficients), ic = ic, plot.diff.first = plot_diff_first)
+    aic_matrix[1, per1] = IndexEval(plot.diff = plot_diff, index.numb = 0, ic = ic, plot.diff.first = plot_diff_first)
     
-    if (optimum == "local" && EvalSeq == "Sequential") {
+    if (optimum == "local" && eval.seq == "sequential") {
       if (aic_matrix[1, per1] <= aic_compare[1, per1]){
         break
       }
-    } else if (optimum == "local" && EvalSeq == "AllTogether") {
+    } else if (optimum == "local" && eval.seq == "all.together") {
       if (per1 >= 2){
         if (aic_compare[1, per1-1] <= aic_compare[1, per1]){
           break
@@ -129,17 +129,17 @@ IndexMemberSelection = function(market, price, vol, weighting = "market", weight
   }
   
   ### choice of optimal index members
-  if (optimum == "local" && EvalSeq == "Sequential") {
+  if (optimum == "local" && eval.seq == "sequential") {
     if (per1 > 1) {
       index_members = index_comp_numb[per1 - 1]
     } else if (per1 == 1) {
       index_members = index_comp_numb[per1]
     }
-  } else if (optimum == "local" && EvalSeq == "AllTogether") {
+  } else if (optimum == "local" && eval.seq == "all.together") {
     index_members = index_comp_numb[per1]
-  } else if (optimum == "global" && EvalSeq == "Sequential") { # works for Sequential and AllTogether
+  } else if (optimum == "global" && eval.seq == "sequential") { # works for Sequential and AllTogether
     index_members = which.min(aic_compare[1,]) * steps
-  } else if (optimum == "global" && EvalSeq == "AllTogether") { # works for Sequential and AllTogether
+  } else if (optimum == "global" && eval.seq == "all.together") { # works for Sequential and AllTogether
     index_members = which.min(c(aic_matrix[1, 1], aic_compare[1,])) * steps
   }
   

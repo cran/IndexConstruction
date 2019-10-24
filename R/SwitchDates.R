@@ -1,4 +1,4 @@
-SwitchDates = function(price, specificDate = NULL, WeekDay = NULL, Appearance = 1) {
+switchDates = function(price, specificDate = NULL, WeekDay = NULL, Appearance = 1) {
   if (class(price)[1] != "xts") {
     stop("The data for 'price' have to be in the format 'xts'. Please check the R library 'xts' to convert the data.")
   }
