@@ -1,5 +1,5 @@
-3201ce7e038561dc2e7c9ab5a5d5b3a8 *DESCRIPTION
-4c46cf3ec79ea3b72ee3811ee6c5c199 *NAMESPACE
+6bbf5275b638beacf0f48ce8d033e29d *DESCRIPTION
+0524648bef07a4711ca9feba6076a741 *NAMESPACE
 413b1eeaeda710151754968c005a7000 *R/IndexComp.R
 ed1eecc144ca6816ba23ca5a71b68f98 *R/IndexEval.R
 b0fef2dfbe087a384ea242fbebde84c8 *R/IndexLoop.R
@@ -9,8 +9,8 @@ b8d9ce0ed2fa44e2a7488a98ec554908 *R/IndexUpdate.R
 772633c9db8db6076db823c840b490bd *R/RelativeWeights.R
 0fa268c24d27a31555486296d757ad5e *R/SwitchDates.R
 8ec898dd93ab474aa21f0a1993d0b23d *R/class_CRIX.R
-c2682c2624b53d57ffacd96796b08000 *data/CryptoData.RData
-7c699b51ebd02eda5b76c33225e91189 *data/datalist
+5c7881159e12d1f80af50368f27a4830 *data/CryptoData.RData
+8d1127433a6602274a9b25f1e692b0fa *data/datalist
 b09de006b611cb84739c53cfe3771b9f *inst/CITATION
 ad214d232a6334f3c2dbd9f59208e39d *man/IndexComp.Rd
 5cdc88022f8a4141276b8635415b9ce0 *man/IndexMemberSelection.Rd

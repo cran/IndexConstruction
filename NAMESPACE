@@ -3,8 +3,6 @@
 export("indexComp", "switchDates", "indexUpdate", "relativeWeights", "indexMemberSelection", "indexMembersUpdate"
 )
 
-exportClass("IndexConstruction")
-
 S3method(print, IndexConstruction)
 S3method(plot, IndexConstruction)
 S3method(weights, IndexConstruction)
