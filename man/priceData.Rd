@@ -13,5 +13,5 @@ data(CryptoData)
 \format{A dataset with a xts matrix. Load the R library xts for proper visualization of the dataset.
 }
 
-\source{The dataset was provided by CoinGecko. Up-to-date data are accessible via \url{https://www.coingecko.com/api}.}
+\source{The dataset was provided by CoinGecko. Up-to-date data are accessible via \url{https://www.coingecko.com/en/api}.}
 

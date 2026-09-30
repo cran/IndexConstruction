@@ -37,7 +37,7 @@ IndexEval = function(plot.diff, index.numb, ic = "AIC", plot.diff.first) {
     }, 
     Cp = {
         cp_var = try(sum(garchFit(data = plot.diff)@h.t), silent = TRUE)
-        if (class(cp_var) == "try-error"){
+        if (inherits(cp_var, "try-error")){
             cp_var = var(plot.diff)
         }
         cp = (sum(plot.diff^2)/cp_var) - length(plot.diff) + 2 * index.numb

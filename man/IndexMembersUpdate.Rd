@@ -34,7 +34,7 @@ The last index value before rederivation.
 A list, entry 1 is the ordered names of index members, entry 2 the respective consideration of the index constituents, entry 3 the weights of the index members which gives multiplied with entry 2 the actual weight and entry 4 the new divisor of the index.
 }
 \references{
-Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \url{https://doi.org/10.1016/j.jempfin.2018.08.004}
+Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \doi{10.1016/j.jempfin.2018.08.004}
 }
 \examples{
 data(CryptoData)

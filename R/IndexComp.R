@@ -7,8 +7,8 @@ indexComp = function(market, price, vol = NULL, weighting = "market", weighting.
   if (class(vol)[1] != "xts" & is.null(vol) == FALSE) {
     stop("The data for 'vol' have to be in the format 'xts'. Please check the R library 'xts' to convert the data.")
   }
-  if ((weighting != "market" & weighting != "volume") | (weighting.all != "market" & weighting.all != "volume")) {
-    stop("The weighting scheme has to be either 'market' or 'volume'. Please chose either of the two options.")
+  if ((weighting != "market" & weighting != "volume" & weighting != "equal") | (weighting.all != "market" & weighting.all != "volume" & weighting.all != "equal")) {
+    stop("The weighting scheme has to be either 'market', 'volume', or 'equal'. Please chose either of the two options.")
   }
   if ((eval.seq != "sequential" & eval.seq != "all.together")) {
     stop("The evaluation scheme 'eval.seq' has to be either 'sequential' or 'all.together'. Please chose either of the two options.")
@@ -33,6 +33,12 @@ indexComp = function(market, price, vol = NULL, weighting = "market", weighting.
         numb_aic = floor(numb_aic1)
     }
     
+    na_locf_both <- function(object) {
+      object <- na.locf(object, na.rm = FALSE)                 # forward fill
+      object <- na.locf(object, fromLast = TRUE, na.rm = FALSE) # backward fill remaining leading NAs
+      object
+    }
+    
     index_comp_numb = seq(start.const, dim(price)[[2]], steps)
     aic_matrix    = matrix(NA, nrow = numb_aic, ncol = length(index_comp_numb))
     aic_compare    = matrix(NA, nrow = numb_aic, ncol = length(index_comp_numb))
@@ -43,6 +49,11 @@ indexComp = function(market, price, vol = NULL, weighting = "market", weighting.
     weights_list = list()
     weights_list2 = list()
     weights_list3 = list()
+    
+    # if equal weighting is chosen, turn off the 
+    if (weighting == "equal") {
+      market[!is.na(market)] = 10
+    }
     
     ### start calculation index
     for (per in 1:numb_aic){
@@ -57,26 +68,49 @@ indexComp = function(market, price, vol = NULL, weighting = "market", weighting.
                                               derivation.period)] + 1
         begin_line            = current_lines[2]
         ### total market index
-        index_t_v_all         = index.comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
+        index_t_v_all         = index_comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
                                            index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines, 
                                            begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = per, numb.aic = numb_aic, 
                                            crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
         max_coin_numb[per] = max(sapply(index_t_v_all[[2]], length))
         
+        ### for equal weighting with unknown market cap, determine most contributing 
+        order.candidates = NULL
+        if (weighting == "equal") {
+          r.square.loop = c()
+          candidates.loop = unique(unlist(index_t_v_all[[2]]))
+          for (i in candidates.loop) {
+            r.square.loop[i] = summary(lm( diff(log(index_t_v_all[[1]])) ~ diff(log(price[names(diff(log(index_t_v_all[[1]]))),i])) - 1 , na.action = na_locf_both))$r.squared
+          }
+          order.candidates = names(which.max(floor(r.square.loop * 1e8 + 0.5)))
+          
+          while (length(order.candidates) < length(unique(unlist(index_t_v_all[[2]])))) {
+            r.square.loop = c()
+            candidates.loop = unique(unlist(index_t_v_all[[2]]))
+            candidates.loop = candidates.loop[!is.element(candidates.loop, order.candidates)]
+            for (i in candidates.loop) {
+              r.square.loop = c(r.square.loop, summary(lm( diff(log(index_t_v_all[[1]])) ~ diff(log(
+                price[names(diff(log(index_t_v_all[[1]]))),c(order.candidates,i)])) - 1  , na.action = na_locf_both))$r.squared)
+            }
+            order.candidates = c(order.candidates, candidates.loop[which.max(floor(r.square.loop * 1e8 + 0.5))])
+          }
+        }
+        ###
+        
         if (eval.seq == "all.together") {
-          index_t_v_numb = index.comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[1], base.value = base.value,
+          index_t_v_numb = index_comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[1], base.value = base.value,
                                       index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines, 
                                       begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = per, numb.aic = numb_aic,
-                                      crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
+                                      crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp, order.candidates = order.candidates)
         }
 
         ### indices with different numbers of constituents
         for (per1 in 1:(length(index_comp_numb)-1)){
           if (eval.seq == "sequential") {
-            index_t_v_numb = index.comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[per1], base.value = base.value,
+            index_t_v_numb = index_comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[per1], base.value = base.value,
                                         index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines,
                                         begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = per, numb.aic = numb_aic,
-                                        crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
+                                        crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp, order.candidates = order.candidates)
           }
 
             if (is.null(index_t_v_numb)) {break}
@@ -119,7 +153,7 @@ indexComp = function(market, price, vol = NULL, weighting = "market", weighting.
             }
             plot_diff = diff(log(c(base.value, index_t_v_all[[1]]))) - diff(log(c(base.value, index_t_v_numb[[1]])))
             data_x = d
-            erg = lm(plot_diff ~ data_x - 1)
+            erg = lm(plot_diff ~ data_x - 1 , na.action = na_locf_both)
             plot_diff_values[[per]][[per1]] = plot_diff
             
             ### evaluation of current index with an IC method
@@ -163,6 +197,42 @@ indexComp = function(market, price, vol = NULL, weighting = "market", weighting.
         ### end if which controls fixed_value = NULL
         } else {
             index_members = fixed.value
+            
+            if (weighting == "equal") {
+            ### days to alter the index members for choice of optimal settings
+            current_lines         = days.line[seq((1 + derivation.period.ic * 
+                                                     (per - 1)), (derivation.period.ic * per + (derivation.period + 1)), 
+                                                  derivation.period)] + 1
+            begin_line            = current_lines[2]
+            ### total market index
+            index_t_v_all         = index_comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
+                                               index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines, 
+                                               begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = per, numb.aic = numb_aic, 
+                                               crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
+            max_coin_numb[per] = max(sapply(index_t_v_all[[2]], length))
+            
+            ### for equal weighting with unknown market cap, determine most contributing 
+            order.candidates = NULL
+            
+              r.square.loop = c()
+              candidates.loop = unique(unlist(index_t_v_all[[2]]))
+              for (i in candidates.loop) {
+                r.square.loop[i] = summary(lm( diff(log(index_t_v_all[[1]])) ~ diff(log(price[names(diff(log(index_t_v_all[[1]]))),i])) - 1 , na.action = na_locf_both))$r.squared
+              }
+              order.candidates = names(which.max(floor(r.square.loop * 1e8 + 0.5)))
+              
+              while (length(order.candidates) < length(unique(unlist(index_t_v_all[[2]])))) {
+                r.square.loop = c()
+                candidates.loop = unique(unlist(index_t_v_all[[2]]))
+                candidates.loop = candidates.loop[!is.element(candidates.loop, order.candidates)]
+                for (i in candidates.loop) {
+                  r.square.loop = c(r.square.loop, summary(lm( diff(log(index_t_v_all[[1]])) ~ diff(log(
+                    price[names(diff(log(index_t_v_all[[1]]))),c(order.candidates,i)])) - 1  , na.action = na_locf_both))$r.squared)
+                }
+                order.candidates = c(order.candidates, candidates.loop[which.max(floor(r.square.loop * 1e8 + 0.5))])
+              }
+            }
+            ###
         }
             
         ### days to alter the index members for application of optimal settings
@@ -171,35 +241,35 @@ indexComp = function(market, price, vol = NULL, weighting = "market", weighting.
                                        derivation.period)] + 1
         begin_line1    = current_lines1[2]
         ### calculation of index under the chosen settings, means the chosen number of constituents
-        crix1          = index.comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_members, base.value = base.value,
+        crix1          = index_comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_members, base.value = base.value,
                                     index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines1, 
                                     begin.line.func = begin_line1, comp1 = TRUE, comp = TRUE, per = per, numb.aic = numb_aic,
-                                    crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
+                                    crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp, order.candidates = order.candidates)
         
         while (is.null(crix1)){
             index_members = index_members - 1
-            crix1         = index.comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_members, base.value = base.value,
+            crix1         = index_comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_members, base.value = base.value,
                                        index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines1, 
                                        begin.line.func = begin_line1, comp1 = TRUE, comp = TRUE, per = per, numb.aic = numb_aic,
-                                       crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
+                                       crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp, order.candidates = order.candidates)
         }
         crix2     = crix1[[1]]
         weights_list[[per]] = crix1[[4]]
         weights_list2[[per]] = crix1[[5]]
         weights_list3[[per]] = crix1[[7]]
         ### total market index rebased at the total market index
-        crix_all2 = index.comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
+        crix_all2 = index_comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
                                index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines1, 
                                begin.line.func = begin_line1, comp1 = TRUE, comp = FALSE, per = per, numb.aic = numb_aic,
-                               crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
+                               crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp, order.candidates = order.candidates)
         cryptos_available[[per]] = crix_all2[[2]]
         
         crix_all1 = crix_all2[[1]]
         ### total market index rebased at the index
-        crix_all4 = index.comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
+        crix_all4 = index_comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
                                index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines1, 
                                begin.line.func = begin_line1, comp1 = TRUE, comp = TRUE, per = per, numb.aic = numb_aic,
-                               crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
+                               crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp, order.candidates = order.candidates)
         crix_all3 = crix_all4[[1]]
         if (per == 1){
             crix          = do.call(cbind,list(crix2))

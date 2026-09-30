@@ -27,7 +27,7 @@ For more details, please see the methodology section of the paper Trimborn and H
 The next value(s) of the Index.
 }
 \references{
-Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \url{https://doi.org/10.1016/j.jempfin.2018.08.004}
+Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \doi{10.1016/j.jempfin.2018.08.004}
 }
 \examples{
 data(CryptoData)

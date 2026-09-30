@@ -1,5 +1,5 @@
-index.comp = function(market, price, vol, weighting, index.const, base.value, index.periods, order.derive, 
-                      current.lines.func, begin.line.func, comp, comp1, per, numb.aic, crix, crix.all, crix.all.comp){
+index_comp = function(market, price, vol, weighting, index.const, base.value, index.periods, order.derive, 
+                      current.lines.func, begin.line.func, comp, comp1, per, numb.aic, crix, crix.all, crix.all.comp, order.candidates = NULL){
     
     index             = list()
     index_members_m   = list()
@@ -29,7 +29,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
             last_index_period_time   = price[paste(current.lines.func[1],(current.lines.func[2] - 1), sep="::")]
             last_index_period_market = market[paste(current.lines.func[1],(current.lines.func[2] - 1), sep="::")]
             last_index_period_vol = vol[paste(current.lines.func[1],(current.lines.func[2] - 1), sep="::")]
-            if (is.null(vol) == TRUE | weighting == "market") {
+            if (is.null(vol) == TRUE | weighting == "market" | weighting == "equal") {
               omit_last = Reduce(intersect, list(which(apply(is.na(
                 last_index_period_time), 2, any)
                 == F), which(apply(is.na(last_index_period_market), 2, any) == F)))
@@ -43,7 +43,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
             last_index_period_time   = last_index_period_time[, omit_last]
             last_index_period_market = last_index_period_market[, omit_last]
             last_index_period_vol = last_index_period_vol[, omit_last]
-            if (is.null(vol) == TRUE | weighting == "market") {
+            if (is.null(vol) == TRUE | weighting == "market" | weighting == "equal") {
               omit_last_zero           = Reduce(intersect, list(which(apply(
                 last_index_period_time == 0, 2, any) == F), which(apply(
                   last_index_period_market == 0, 2, any) == F)))
@@ -58,7 +58,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
             last_index_period_market = last_index_period_market[, omit_last_zero]
             last_index_period_vol = last_index_period_vol[, omit_last_zero]
         } else {
-          if (is.null(vol) == TRUE | weighting == "market") {
+          if (is.null(vol) == TRUE | weighting == "market" | weighting == "equal") {
             omit_now = Reduce(intersect, list(which(apply(is.na(
               index_period_time), 2, any)
               == F), which(apply(is.na(index_period_market), 2, any) == F)))
@@ -73,7 +73,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
             last_index_period_market  = index_period_market[, omit_now]
             last_index_period_vol  = index_period_vol[, omit_now]
             
-            if (is.null(vol) == TRUE | weighting == "market") {
+            if (is.null(vol) == TRUE | weighting == "market" | weighting == "equal") {
               omit_now_zero            = Reduce(intersect, list(which(apply(
                 index_period_time == 0, 2, any) == F), which(apply(
                   index_period_market == 0, 2, any) == F)))
@@ -115,6 +115,12 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
         } else if (weighting == "market") {
             order_market = order(last_index_market[,colnames(last_index_period_market)], 
                                  decreasing = T)
+        } else if (weighting == "equal" & index.const == "all") {
+          order_market = order(last_index_market[,colnames(last_index_period_market)], 
+                               decreasing = T)
+        } else if (weighting == "equal") {
+          order_market = match(order.candidates, colnames(last_index_period_market), nomatch = 0)
+          order_market <- order_market[order_market > 0]
         }
         
         if (order.derive == T){
@@ -134,7 +140,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
         
         if (weighting == "volume") {
           index_weights = colSums(last_index_period_vol) / colSums(last_index_period_market)
-        } else if (weighting == "market") {
+        } else if (weighting == "market" | weighting == "equal") {
           index_weights = rep(1, length(order_market))
         }
         
@@ -180,7 +186,7 @@ index.comp = function(market, price, vol, weighting, index.const, base.value, in
         if (break_loop == T){
             break
         }
-    } # end for loop
+    } # end for loops
     
     ################### Index derivation done
     # building whole index time series

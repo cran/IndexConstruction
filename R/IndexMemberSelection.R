@@ -43,14 +43,14 @@ indexMemberSelection = function(market, price, vol, weighting = "market", weight
   begin_line            = current_lines[2]
   
   ### total market index
-  index_t_v_all         = index.comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
+  index_t_v_all         = index_comp(market = market, price = price, vol = vol, weighting = weighting.all, index.const = "all", base.value = base.value,
                                      index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines, 
                                      begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = 1, numb.aic = 1, 
                                      crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
   max_coin_numb[1] = max(sapply(index_t_v_all[[2]], length))
   
   if (eval.seq == "all.together") {
-    index_t_v_numb = index.comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[1], base.value = base.value,
+    index_t_v_numb = index_comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[1], base.value = base.value,
                                 index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines, 
                                 begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = 1, numb.aic = 1,
                                 crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)
@@ -59,7 +59,7 @@ indexMemberSelection = function(market, price, vol, weighting = "market", weight
   ### indices with different numbers of constituents
   for (per1 in 1:(length(index_comp_numb)-1)){
     if (eval.seq == "sequential") {
-      index_t_v_numb = index.comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[per1], base.value = base.value,
+      index_t_v_numb = index_comp(market = market, price = price, vol = vol, weighting = weighting, index.const = index_comp_numb[per1], base.value = base.value,
                                   index.periods = index_periods, order.derive = TRUE, current.lines.func = current_lines,
                                   begin.line.func = begin_line, comp1 = FALSE, comp = TRUE, per = 1, numb.aic = 1,
                                   crix = crix, crix.all = crix_all, crix.all.comp = crix_all_comp)

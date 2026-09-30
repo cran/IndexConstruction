@@ -14,7 +14,7 @@ base.value = 1000, derivation.period = 1, derivation.period.ic = 3, days.line)
 }
 \arguments{
 \item{market}{
-An xts object with the market capitalization data. The default is \code{NULL}, an entry is necessary if weighting is set to \code{"market"}.
+An xts object with the market capitalization data. The default is \code{NULL}, an entry is necessary if weighting is set to \code{"market"}. If \code{"equal"} is chosen, the market cap will not be used in the calculation. 
 }
  \item{price}{
 An xts object with the price data. An entry is always required.
@@ -23,10 +23,10 @@ An xts object with the price data. An entry is always required.
 An xts object with the trading volume (liquidity) data. The default is \code{NULL}, an entry is necessary if weighting is set to \code{"volume"}.
 }
   \item{weighting}{
-The weighting scheme to be applied. \code{"market"} refers to weighting by market capitalization, \code{"volume"} refers to weighting by trading volume.
+The weighting scheme to be applied. \code{"market"} refers to weighting by market capitalization, \code{"volume"} refers to weighting by trading volume, and \code{"equal"} refers to equal weighting.
 }
 \item{weighting.all}{
-The weighting scheme to be applied to the full market index. \code{"market"} refers to weighting by market capitalization, \code{"volume"} refers to weighting by trading volume.}
+The weighting scheme to be applied to the full market index. \code{"market"} refers to weighting by market capitalization, \code{"volume"} refers to weighting by trading volume, and \code{"equal"} refers to equal weighting.}
 \item{ic}{
 Information Criterion to be used for the evaluation of the appropriate index to be used. Possible entries are \code{"AIC"}, \code{"GCV"}, \code{"GFCV"}, \code{"SH"}, \code{"Cp"} and \code{"FPE"}.
 }
@@ -59,13 +59,19 @@ The days of the month to perform the recalculation on. Can be calculated from sw
 }
 }
 \details{
+For equal weighting, the order is not decided by largest market capitalization or largest trading volume. Instead, 
+the order in which assets are added to the computation is by largest contribution to the R-squared on the 
+last periods data. For a large number of assets, this computation can take a while during the periodic recomputation. 
+In case two or more assets have similar R-square, the first one in the dataset with respective R-square contribution 
+is added. 
+
 For more details, please see the methodology section of the paper Trimborn and Haerdle (2018).
 }
 
 \value{
   An object of the \code{class} IndexConstruction with the components
   \item{results}{A list containing the results of the model fitting}
-  \itemize{
+  \describe{
     \item{\code{index} }{The optimal index}
     \item{\code{totalIndex} }{The index of all constituents}
     \item{\code{totalIndexRebased} }{The index of all constituents rebased at the index each time after altering the number of index constituents which is useful for comparisons with the market}
@@ -74,7 +80,7 @@ For more details, please see the methodology section of the paper Trimborn and H
     \item{\code{weightsRelative} }{A list containing the relative weights assigned to the selected index constituents in each period}
   }
   \item{inputs}{A list containing the inputs for model fitting}
-  \itemize{
+  \describe{
   \item{\code{marketCap} }{The provided dataset of the market capitalization of each asset for index construction}
   \item{\code{price} }{The provided dataset of the price series of each asset for index construction}
   \item{\code{tradingVolume} }{The provided dataset of the trading volume of each asset for index construction}
@@ -92,7 +98,7 @@ For more details, please see the methodology section of the paper Trimborn and H
 }
 
 \references{
-Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \url{https://doi.org/10.1016/j.jempfin.2018.08.004}
+Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \doi{10.1016/j.jempfin.2018.08.004}
 }
 \examples{
 data(CryptoData)

@@ -27,7 +27,7 @@ Defines if the 1st, 2nd or another appearance of a weekday gets returned. E.g. t
 A vector of class date with the respective dates on which the index members become reevaluated. This is a necessary input to \code{IndexComp}.
 }
 \references{
-Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \url{https://doi.org/10.1016/j.jempfin.2018.08.004}
+Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \doi{10.1016/j.jempfin.2018.08.004}
 }
 \examples{
 data(CryptoData)

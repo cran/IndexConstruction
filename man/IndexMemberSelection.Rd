@@ -65,7 +65,7 @@ The days of the month to perform the recalculation on. Can be calculated from Sw
 Returns the number of index members for application in the next period.
 }
 \references{
-Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \url{https://doi.org/10.1016/j.jempfin.2018.08.004}
+Trimborn, S. and Haerdle, W.K. (2018). CRIX an Index for cryptocurrencies, \emph{Journal of Empirical Finance} 49, pp. 107-122. \doi{10.1016/j.jempfin.2018.08.004}
 }
 \examples{
 data(CryptoData)
